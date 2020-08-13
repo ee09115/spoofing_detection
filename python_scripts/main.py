@@ -1,6 +1,8 @@
 import numpy as np
 import cv2
 from sklearn.externals import joblib
+import pandas as pd
+import joblib
 import argparse
 # from time import gmtime, strftime
 
@@ -32,9 +34,11 @@ if __name__ == "__main__":
     # # Load model
     clf = None
     try:
+        print(args["name"])
         clf = joblib.load(args["name"])
+        # clf = pd.read_pickle(args["name"])
     except IOError as e:
-        print "Error loading model <"+args["name"]+">: {0}".format(e.strerror)
+        print ("Error loading model <"+args["name"]+">: {0}".format(e.strerror))
         exit(0)
 
     # # Open the camera
@@ -43,7 +47,7 @@ if __name__ == "__main__":
     else:
         cap = cv2.VideoCapture(int(args["device"]))
     if not cap.isOpened():
-        print "Error opening camera"
+        print ("Error opening camera")
         exit(0)
 
     width = 320
@@ -63,7 +67,7 @@ if __name__ == "__main__":
     while True:
         ret, img_bgr = cap.read()
         if ret is False:
-            print "Error grabbing frame from camera"
+            print ("Error grabbing frame from camera")
             break
 
         img_gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
@@ -95,7 +99,7 @@ if __name__ == "__main__":
 
             point = (x, y-5)
 
-            print measures, np.mean(measures)
+            print (measures, np.mean(measures))
             if 0 not in measures:
                 text = "True"
                 if np.mean(measures) >= 0.7:
